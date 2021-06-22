@@ -19,6 +19,7 @@ bool isArray;
 bool isFunction;
 bool isDefined;
 SymbolInfo * next;
+string code;
 
 
 public :
@@ -32,6 +33,7 @@ public :
         isFunction=false;
         isDefined=false;
         declaredType="UNDECLARED";
+        this->code="";
     }
 
     SymbolInfo(string name,string type)
@@ -43,6 +45,7 @@ public :
         isFunction=false;
         isDefined=false;
         declaredType="UNDECLARED";
+        this->code="";
     }
     void setName(string n)///apparently not necessary
     {
@@ -502,17 +505,3 @@ void printAllScope(ofstream &outfile)
 
 
 };
-/*
-int main()
-{
- vector<SymbolInfo*>  list_of_declared_vars;
- list_of_declared_vars.push_back(new SymbolInfo("a","b"));
- for(auto it : list_of_declared_vars)
- {
-    cout<<1;
- }
-
- {int a=10;};
- cout<<a;
-}
-*/

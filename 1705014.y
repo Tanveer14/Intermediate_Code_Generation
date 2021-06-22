@@ -24,12 +24,39 @@ vector<SymbolInfo*> list_of_parameters;
 vector<SymbolInfo*> list_of_arguments;
 ofstream logfile;
 ofstream errorfile;
+ofstream codefile;
 string currentFunctionName;
+string codeStart=".MODEL SMALL\n.STACK 100H;initialize model and stack size\n"
+string codePrint="PRINTLN PROC;procedure for printing\nPUSH AH\nMOV AH, 2\nINT 21H\nPOP AH\nRET\nPRINTLN ENDP\n"
+string codeDataDec=".DATA\n"
+
+int labelCount=0;
+int tempCount=0;
+
+string newLabel()
+{
+	string lb="L";
+	string t=to_string(labelCount);
+	labelCount++;
+	return lb;
+}
+
+string newTemp()
+{
+	string tmp="t"+to_string(labelCount);
+	tempCount++;
+	return tmp;
+}
+
+string println()
+{
+	return 
+	//each time move the var to DL
+}
 
 
 void yyerror(string text)
 {
-//this is added
 	error_count++;
 	errorfile<<"Error at line "<<line_no<<": "<<text<<endl<<endl;
 	logfile<<"Error at line "<<line_no<<": "<<text<<endl<<endl;
@@ -79,6 +106,7 @@ void InsertInDeclarationList(SymbolInfo * s)
 	printError("Multiple declaration of "+s->getName());
 	return;
 	}
+	codeDataDec=codeDataDec+"DB "+s->getName()+"?\n"
 	list_of_declared_vars.push_back(s1);
 }
 
@@ -97,6 +125,7 @@ void InsertDeclaredVarsSymbolTable(string type_specifier)//for var declaration
 			if(!table->Insert(s)){
 	    		printError("Multiple declaration of "+s->getName());
 	    		}
+	    		
 		}
 		else 
 		{
@@ -1171,16 +1200,19 @@ int main(int argc,char *argv[])
 	
 	string logfilename="log.txt";
 	string errorfilename="error.txt";
+	string codefilename="code.asm";
 	
 	
 	logfile.open(logfilename);
 	errorfile.open(errorfilename);
+	codefile.open(codefilename);
 	yyin=fin;
 	
 	yyparse();
 	
 	logfile.close();
 	errorfile.close();
+	codefile.close();
 	
 	fclose(fin);
 	

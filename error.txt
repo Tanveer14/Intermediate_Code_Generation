@@ -1,0 +1,22 @@
+Error at line 3: A function declared inside a function
+
+Error at line 6: syntax error
+
+Error at line 6: 1th parameter's name not given in function definition of var
+
+Error at line 9: syntax error
+
+Error at line 9: 2th parameter's name not given in function definition of var1
+
+Error at line 13: syntax error
+
+Error at line 15: syntax error
+
+Error at line 20: A function defined inside a function
+
+Error at line 30: syntax error
+
+Error at line 31: syntax error
+
+Error at line 32: Unrecognized character #
+
