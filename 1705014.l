@@ -1,6 +1,6 @@
 %option noyywrap yylineno
 
-%x stringState
+%x stringState 
 %x singleCommentState
 %x multiCommentState
 
