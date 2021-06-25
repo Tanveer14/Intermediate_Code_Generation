@@ -1,19 +1,45 @@
 .MODEL SMALL
 .STACK 100H;initialize model and stack size
 .DATA
-a1_1 DB  ?; line no: 2
-b1_1 DB  ?; line no: 2
-c1_1 DB  ?; line no: 2
-i1_1 DB  ?; line no: 2
-t0 DB  ?
+a1_1 DW  ?; line no: 2
+b1_1 DW  ?; line no: 2
+c1_1 DW  3 DUP(?)
+t0 DW  ?
+t1 DW  ?
+t2 DW  ?
+t3 DW  ?
+t4 DW  ?
 
 .CODE
 
-PRINTLN PROC;procedure for printing
-MOV AH, 2
-ADD DL,30H 
+
+PRINTLN PROC
+MOV DX,0
+PUSH DX
+START:
+MOV AX,BX
+MOV DX,0
+MOV CX,10
+DIV CX
+MOV BX,AX
+ADD DX,30H 
+PUSH DX
+CMP BX,0
+JE EXIT
+JMP START
+EXIT:
+STARTPRINT:
+POP DX
+CMP DX,0
+JE ENDPRINT 
+MOV AH,2
 INT 21H
-RET
+JMP STARTPRINT
+ENDPRINT:MOV DL,13
+INT 21H
+MOV DL,10
+INT 21H
+RET  
 PRINTLN ENDP
 
 main PROC
@@ -21,74 +47,131 @@ MOV AX,@DATA
 MOV DS,AX
 
 
-MOV AL,0
-MOV b1_1,AL
+
+
+MOV AX,2
+MOV BX,3
+ADD AX,BX
+MOV t0, AX
+
+MOV AX,1
+MOV BX,t0
+IMUL BX
+
+MOV t1, AX
+
+
+MOV AX,t1
+MOV BX,3
+MOV DX,0
+IDIV BX
+MOV t2, DX
+
+MOV AX,t2
+MOV a1_1,AX
 
 
 
-MOV AL,1
-MOV c1_1,AL
 
-
-
-MOV AL,0
-MOV i1_1,AL
-startForL3:
-
-
-MOV AL,i1_1
-MOV BL,4		
-CMP AL,BL
-MOV t0,0
+MOV AX,1
+MOV BX,5		
+CMP AX,BX
+MOV t3,0
 JNL L0
-MOV t0,1
+MOV t3,1
 L0:
-MOV AL,t0
-CMP AL,0
-JE endForL4
+
+MOV AX,t3
+MOV b1_1,AX
 
 
-MOV AL,3
-MOV a1_1,AL
-startWhileL1:
-
-MOV AL,a1_1
-SUB AL,1
-MOV a1_1, AL
-
-MOV AL,a1_1
-CMP AL,0
-JE endWhileL2
-
-MOV AL,b1_1
-ADD AL,1
-MOV b1_1, AL
-
-JMP startWhileL1
-endWhileL2:
+MOV BX,0
+SAL BX,1;accessing array in based mode
 
 
-
-MOV AL,i1_1
-ADD AL,1
-MOV i1_1, AL
-
-JMP startForL3
-endForL4:
+MOV AX,20
+MOV c1_1[BX],AX
 
 
+MOV BX,1
+SAL BX,1;accessing array in based mode
 
-MOV DL,a1_1
+
+MOV AX,10
+MOV c1_1[BX],AX
+
+
+MOV BX,a1_1
 CALL PRINTLN
 
 
 
-MOV DL,b1_1
+MOV BX,b1_1
 CALL PRINTLN
 
 
 
-MOV DL,c1_1
+
+MOV AX, a1_1
+ MOV BX,b1_1
+MOV CX,0
+MOV t4,CX
+CMP AX,0
+JE L1
+CMP BL,0 
+JE L1
+MOV CX,1
+MOV t4,CX
+L1:
+MOV AX,t4
+CMP AX,0
+JE L2
+
+MOV BX,0
+SAL BX,1;accessing array in based mode
+
+MOV AX,c1_1[BX]
+ADD AX,1
+MOV c1_1[BX], AX
+
+JMP L3
+L2:
+
+MOV BX,1
+SAL BX,1;accessing array in based mode
+
+
+MOV BX,0
+SAL BX,1;accessing array in based mode
+
+MOV AX,c1_1[BX]
+MOV c1_1[BX],AX
+L3:
+
+
+
+
+MOV BX,0
+SAL BX,1;accessing array in based mode
+
+MOV AX,c1_1[BX]
+MOV a1_1,AX
+
+
+
+MOV BX,1
+SAL BX,1;accessing array in based mode
+
+MOV AX,c1_1[BX]
+MOV b1_1,AX
+
+
+MOV BX,a1_1
+CALL PRINTLN
+
+
+
+MOV BX,b1_1
 CALL PRINTLN
 
 
