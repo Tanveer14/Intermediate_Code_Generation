@@ -1,14 +1,11 @@
 .MODEL SMALL
 .STACK 100H;initialize model and stack size
 .DATA
-a1_1 DB  ?
-b1_1 DB  ?
-c1_1 DB  3 DUP(?)
+a1_1 DB  ?; line no: 2
+b1_1 DB  ?; line no: 2
+c1_1 DB  ?; line no: 2
+i1_1 DB  ?; line no: 2
 t0 DB  ?
-t1 DB  ?
-t2 DB  ?
-t3 DB  ?
-t4 DB  ?
 
 .CODE
 
@@ -24,82 +21,61 @@ MOV AX,@DATA
 MOV DS,AX
 
 
-
-
-MOV AL,2
-MOV BL,3
-ADD AL,BL
-MOV t0, AL
-
-MOV AL,1
-MOV BL,t0
-MUL BL
-
-MOV t1, AL
-
-
-MOV AH,0
-MOV AL,t1
-MOV BL,3
-DIV BL
-MOV t2, AH
-
-MOV AL,t2
-MOV a1_1,AL
-
-
-
-
-MOV AL,1
-MOV BL,5		
-CMP AL,BL
-MOV t3,0
-JNG L0
-MOV t3,1
-L0:
-
-MOV AL,t3
+MOV AL,0
 MOV b1_1,AL
 
 
-MOV BL,0
-MOV BH,0;accessing array in based mode
 
-MOV AL,8
-MOV c1_1[BX],AL
+MOV AL,1
+MOV c1_1,AL
 
 
 
-MOV AL, a1_1
- MOV BL,b1_1
-MOV CL,0
-MOV t4,CL
+MOV AL,0
+MOV i1_1,AL
+startForL3:
+
+
+MOV AL,i1_1
+MOV BL,4		
+CMP AL,BL
+MOV t0,0
+JNL L0
+MOV t0,1
+L0:
+MOV AL,t0
 CMP AL,0
-JE L1
-CMP BL,0 
-JE L1
-MOV CL,1
-MOV t4,CL
-L1:
-MOV AL,t4
-CMP AL,0
-JE L2
-
-MOV BL,0
-MOV BH,0;accessing array in based mode
-MOV AL,c1_1[BX]
-ADD AL,1
-MOV c1_1[BX], AL
-
-L2:;line no 8
+JE endForL4
 
 
-
-
-MOV BL,0
-MOV BH,0;accessing array in based mode
-MOV AL,c1_1[BX]
+MOV AL,3
 MOV a1_1,AL
+startWhileL1:
+
+MOV AL,a1_1
+SUB AL,1
+MOV a1_1, AL
+
+MOV AL,a1_1
+CMP AL,0
+JE endWhileL2
+
+MOV AL,b1_1
+ADD AL,1
+MOV b1_1, AL
+
+JMP startWhileL1
+endWhileL2:
+
+
+
+MOV AL,i1_1
+ADD AL,1
+MOV i1_1, AL
+
+JMP startForL3
+endForL4:
+
 
 
 MOV DL,a1_1
@@ -108,6 +84,11 @@ CALL PRINTLN
 
 
 MOV DL,b1_1
+CALL PRINTLN
+
+
+
+MOV DL,c1_1
 CALL PRINTLN
 
 

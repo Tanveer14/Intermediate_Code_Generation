@@ -96,7 +96,7 @@ ofstream errorfile;
 ofstream codefile;
 string currentFunctionName;
 string codeStart=".MODEL SMALL\n.STACK 100H;initialize model and stack size\n";
-string codePrint="PRINTLN PROC;procedure for printing\nMOV AH, 2\nADD DL,30H \nINT 21H\nRET\nPRINTLN ENDP\n";
+string codePrint="PRINTLN PROC;procedure for printing\nMOV AH, 2\nADD DL,30H \nINT 21H\nRET\nPRINTLN ENDP\n";//need to implement using loop
 string codeDataDec=".DATA\n";
 
 int labelCount=0;
@@ -106,7 +106,8 @@ int tempCount=0;
 
 void addDeclaredVar(string varName)
 {
-	codeDataDec=codeDataDec+varName+table->currentScopeID()+" DB "+" ?\n";
+	codeDataDec=codeDataDec+varName+table->currentScopeID()+" DB "+" ?; line no: "+to_string(line_no)+"\n";
+	cout<<table->currentScopeID()<<": "<<line_no<<endl;
 }
 
 string newLabel()
@@ -273,7 +274,7 @@ void InsertInArgumentList(SymbolInfo * s)
 
 
 
-#line 277 "y.tab.c"
+#line 278 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -411,10 +412,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 208 "1705014.y"
+#line 209 "1705014.y"
 SymbolInfo* symbolinfo;
 
-#line 418 "y.tab.c"
+#line 419 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -793,15 +794,15 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   225,   225,   235,   242,   251,   259,   264,   271,   271,
-     297,   297,   318,   319,   324,   324,   419,   419,   476,   485,
-     495,   503,   514,   527,   542,   542,   555,   555,   569,   597,
-     602,   607,   615,   624,   634,   645,   656,   666,   672,   679,
-     686,   693,   700,   709,   719,   725,   731,   737,   746,   759,
-     764,   779,   786,   791,   803,   839,   888,   894,   922,   928,
-     961,   967,  1005,  1011,  1046,  1052,  1118,  1141,  1154,  1163,
-    1169,  1231,  1239,  1247,  1255,  1264,  1273,  1285,  1292,  1302,
-    1311
+       0,   226,   226,   236,   243,   252,   260,   265,   272,   272,
+     298,   298,   319,   320,   325,   325,   407,   407,   470,   479,
+     489,   497,   508,   521,   536,   536,   566,   566,   598,   626,
+     631,   636,   644,   653,   663,   674,   685,   695,   701,   708,
+     715,   722,   729,   738,   748,   754,   760,   773,   782,   795,
+     806,   821,   829,   834,   847,   884,   933,   939,   967,   973,
+    1006,  1012,  1050,  1056,  1091,  1097,  1163,  1186,  1199,  1208,
+    1214,  1288,  1296,  1304,  1312,  1321,  1330,  1342,  1349,  1359,
+    1371
 };
 #endif
 
@@ -1702,7 +1703,7 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 226 "1705014.y"
+#line 227 "1705014.y"
         {	
 		
 		printLogRule("start : program");
@@ -1710,33 +1711,33 @@ yyreduce:
 		
 		endParse();
 	}
-#line 1714 "y.tab.c"
+#line 1715 "y.tab.c"
     break;
 
   case 3:
-#line 235 "1705014.y"
+#line 236 "1705014.y"
                        {
 			(yyval.symbolinfo)=new SymbolInfo((yyvsp[-1].symbolinfo)->getName()+"\n"+(yyvsp[0].symbolinfo)->getName(),"program");
 			printLogRule("program : program unit");
 			printLogSymbol((yyval.symbolinfo));
 			(yyval.symbolinfo)->setCode((yyvsp[-1].symbolinfo)->getCode()+"\n"+(yyvsp[0].symbolinfo)->getCode());
 			}
-#line 1725 "y.tab.c"
+#line 1726 "y.tab.c"
     break;
 
   case 4:
-#line 242 "1705014.y"
+#line 243 "1705014.y"
                {
 		printLogRule("program : unit");
 		printLogSymbol((yyvsp[0].symbolinfo));
 		(yyval.symbolinfo)= new SymbolInfo();
 		(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 		}
-#line 1736 "y.tab.c"
+#line 1737 "y.tab.c"
     break;
 
   case 5:
-#line 251 "1705014.y"
+#line 252 "1705014.y"
                        {
 			
 			printLogRule("unit : var_declaration");
@@ -1744,29 +1745,29 @@ yyreduce:
 			(yyval.symbolinfo)= new SymbolInfo();
 		      	(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 			}
-#line 1748 "y.tab.c"
+#line 1749 "y.tab.c"
     break;
 
   case 6:
-#line 259 "1705014.y"
+#line 260 "1705014.y"
                         {printLogRule("unit : func_declaration");
      			printLogSymbol((yyvsp[0].symbolinfo));
      			(yyval.symbolinfo)= new SymbolInfo();
 		      	(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));}
-#line 1757 "y.tab.c"
+#line 1758 "y.tab.c"
     break;
 
   case 7:
-#line 264 "1705014.y"
+#line 265 "1705014.y"
                        {printLogRule("unit : func_definition");
      			printLogSymbol((yyvsp[0].symbolinfo));
      			(yyval.symbolinfo)= new SymbolInfo();
 		      	(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));}
-#line 1766 "y.tab.c"
+#line 1767 "y.tab.c"
     break;
 
   case 8:
-#line 271 "1705014.y"
+#line 272 "1705014.y"
                                                                   {
 		SymbolInfo * func=table->lookUp((yyvsp[-3].symbolinfo)->getName());
 		if(func!=nullptr)
@@ -1787,22 +1788,22 @@ yyreduce:
 				table->Insert(s);
 			}
 		}
-#line 1791 "y.tab.c"
+#line 1792 "y.tab.c"
     break;
 
   case 9:
-#line 290 "1705014.y"
+#line 291 "1705014.y"
                             {
 		
 		list_of_parameters.clear();
 		 (yyval.symbolinfo)=new SymbolInfo((yyvsp[-6].symbolinfo)->getName()+" "+(yyvsp[-5].symbolinfo)->getName()+"("+(yyvsp[-3].symbolinfo)->getName()+");","func_declaration");
 		 printLogRule("func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON");
 		 printLogSymbol((yyval.symbolinfo));}
-#line 1802 "y.tab.c"
+#line 1803 "y.tab.c"
     break;
 
   case 10:
-#line 297 "1705014.y"
+#line 298 "1705014.y"
                                                   {
 		SymbolInfo * func=table->lookUp((yyvsp[-2].symbolinfo)->getName());
 		if(func!=nullptr)
@@ -1819,33 +1820,33 @@ yyreduce:
 				table->Insert(s);
 			}
 		}
-#line 1823 "y.tab.c"
+#line 1824 "y.tab.c"
     break;
 
   case 11:
-#line 312 "1705014.y"
+#line 313 "1705014.y"
                             {
 		
 		(yyval.symbolinfo)=new SymbolInfo((yyvsp[-5].symbolinfo)->getName()+" "+(yyvsp[-4].symbolinfo)->getName()+"();","func_declaration");
 		printLogRule("func_declaration : type_specifier ID LPAREN RPAREN SEMICOLON");
 		printLogSymbol((yyval.symbolinfo));}
-#line 1833 "y.tab.c"
+#line 1834 "y.tab.c"
     break;
 
   case 12:
-#line 318 "1705014.y"
+#line 319 "1705014.y"
                                                                      {}
-#line 1839 "y.tab.c"
+#line 1840 "y.tab.c"
     break;
 
   case 13:
-#line 319 "1705014.y"
+#line 320 "1705014.y"
                                                       {}
-#line 1845 "y.tab.c"
+#line 1846 "y.tab.c"
     break;
 
   case 14:
-#line 324 "1705014.y"
+#line 325 "1705014.y"
                                                                  {
 
 		SymbolInfo * func=table->lookUp((yyvsp[-3].symbolinfo)->getName());
@@ -1910,47 +1911,34 @@ yyreduce:
 
 		
 		}
-#line 1914 "y.tab.c"
+#line 1915 "y.tab.c"
     break;
 
   case 15:
-#line 387 "1705014.y"
+#line 388 "1705014.y"
                                      {
 		//inside compound statement, list of parameters inserted in scope
-		for(int i=0;i< list_of_parameters.size();i++)
-		 {
-			if(list_of_parameters[i]->getName()!="$") 
-			{
-				addDeclaredVar(list_of_parameters[i]->getName());//declare each variable in assembly code that is in the parameter of a defined function
-				list_of_parameters[i]->setAssemblyVarName(list_of_parameters[i]->getName()+table->currentScopeID());
-			}
-				
-		 }
-		string parameters="";
-		for(int i=list_of_parameters.size()-1;i>=0;i--)//inserting parameters in function ID
-		 {
-		  parameters=parameters+"POP AX\nMOV "+list_of_parameters[i]->getAssemblyVarName()+",AL\n" ;
-		 
-		 }
+
 		 
 		
 		list_of_parameters.clear();
 		(yyval.symbolinfo)=new SymbolInfo((yyvsp[-6].symbolinfo)->getName()+" "+(yyvsp[-5].symbolinfo)->getName()+"("+(yyvsp[-3].symbolinfo)->getName()+")"+(yyvsp[0].symbolinfo)->getName(),"func_definition");
-		if((yyvsp[-6].symbolinfo)->getName()=="void") (yyval.symbolinfo)->setCode((yyvsp[-5].symbolinfo)->getName()+" PROC\n"+parameters+(yyvsp[0].symbolinfo)->getCode()+"\n"+(yyvsp[-5].symbolinfo)->getName()+" ENDP\n");
-		else (yyval.symbolinfo)->setCode((yyvsp[-5].symbolinfo)->getName()+" PROC\n"+parameters+(yyvsp[0].symbolinfo)->getCode()+"\nRET\n"+(yyvsp[-5].symbolinfo)->getName()+" ENDP\n");
+		
 		printLogRule("func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement");
 		SymbolInfo * s= table->lookUp((yyvsp[-5].symbolinfo)->getName());
 		if(s!=nullptr && s->getIsFunction())
 		{
 			s->setIsDefined();
+			if((yyvsp[-6].symbolinfo)->getName()=="void") (yyval.symbolinfo)->setCode((yyvsp[-5].symbolinfo)->getName()+" PROC\n"+(yyvsp[0].symbolinfo)->getCode()+"\nRET\n"+(yyvsp[-5].symbolinfo)->getName()+" ENDP\n");
+			else (yyval.symbolinfo)->setCode((yyvsp[-5].symbolinfo)->getName()+" PROC\n"+(yyvsp[0].symbolinfo)->getCode()+"\n"+(yyvsp[-5].symbolinfo)->getName()+" ENDP\n");
 		}
 		printLogSymbol((yyval.symbolinfo));
 		}
-#line 1950 "y.tab.c"
+#line 1938 "y.tab.c"
     break;
 
   case 16:
-#line 419 "1705014.y"
+#line 407 "1705014.y"
                                                   {
 		
 		SymbolInfo * func=table->lookUp((yyvsp[-2].symbolinfo)->getName());
@@ -1993,28 +1981,34 @@ yyreduce:
 		}
 		
 		}
-#line 1997 "y.tab.c"
+#line 1985 "y.tab.c"
     break;
 
   case 17:
-#line 460 "1705014.y"
+#line 448 "1705014.y"
                                      {		    
 		(yyval.symbolinfo)=new SymbolInfo((yyvsp[-5].symbolinfo)->getName()+" "+(yyvsp[-4].symbolinfo)->getName()+"()"+(yyvsp[0].symbolinfo)->getName(),"func_definition");
 		printLogRule("func_definition : type_specifier ID LPAREN RPAREN compound_statement");
 		printLogSymbol((yyval.symbolinfo));
-		if((yyvsp[-4].symbolinfo)->getName()=="main")(yyval.symbolinfo)->setCode((yyvsp[-4].symbolinfo)->getName()+" PROC\nMOV AX,@DATA\nMOV DS,AX"+(yyvsp[0].symbolinfo)->getCode()+"\nMOV AH,4CH\nINT 21H\n"+(yyvsp[-4].symbolinfo)->getName()+" ENDP\n");           
-		else (yyval.symbolinfo)->setCode((yyvsp[-4].symbolinfo)->getName()+" PROC\n"+(yyvsp[0].symbolinfo)->getCode()+"\n"+(yyvsp[-4].symbolinfo)->getName()+" ENDP\n");
+		
 		SymbolInfo * s= table->lookUp((yyvsp[-4].symbolinfo)->getName());
 		if(s!=nullptr && s->getIsFunction())
 		{
 			s->setIsDefined();
+			if((yyvsp[-4].symbolinfo)->getName()=="main")(yyval.symbolinfo)->setCode((yyvsp[-4].symbolinfo)->getName()+" PROC\nMOV AX,@DATA\nMOV DS,AX"+(yyvsp[0].symbolinfo)->getCode()+"\nMOV AH,4CH\nINT 21H\n"+(yyvsp[-4].symbolinfo)->getName()+" ENDP\n");           
+			else 
+			{
+				if((yyvsp[-5].symbolinfo)->getName()=="void") (yyval.symbolinfo)->setCode((yyvsp[-4].symbolinfo)->getName()+" PROC\n"+(yyvsp[0].symbolinfo)->getCode()+"\nRET\n"+(yyvsp[-4].symbolinfo)->getName()+" ENDP\n");
+				else (yyval.symbolinfo)->setCode((yyvsp[-4].symbolinfo)->getName()+" PROC\n"+(yyvsp[0].symbolinfo)->getCode()+"\n"+(yyvsp[-4].symbolinfo)->getName()+" ENDP\n");
+				
+			}
 		}
 		}
-#line 2014 "y.tab.c"
+#line 2008 "y.tab.c"
     break;
 
   case 18:
-#line 476 "1705014.y"
+#line 470 "1705014.y"
                                                          {
 		
 		(yyvsp[0].symbolinfo)->setDeclaredType(toUpper((yyvsp[-1].symbolinfo)->getName()));
@@ -2023,11 +2017,11 @@ yyreduce:
 		(yyval.symbolinfo)=new SymbolInfo((yyvsp[-3].symbolinfo)->getName()+","+(yyvsp[-1].symbolinfo)->getName()+" "+(yyvsp[0].symbolinfo)->getName(),"parameter_list");
 		printLogRule("parameter_list  : parameter_list COMMA type_specifier ID");
 		printLogSymbol((yyval.symbolinfo));}
-#line 2027 "y.tab.c"
+#line 2021 "y.tab.c"
     break;
 
   case 19:
-#line 485 "1705014.y"
+#line 479 "1705014.y"
                                                       {//need to insert in parameter_list
 		
 		(yyval.symbolinfo)=new SymbolInfo((yyvsp[-2].symbolinfo)->getName()+","+(yyvsp[0].symbolinfo)->getName(),"parameter_list");
@@ -2037,11 +2031,11 @@ yyreduce:
 		InsertInParameterList(s);
 		printLogSymbol((yyval.symbolinfo));
 		}
-#line 2041 "y.tab.c"
+#line 2035 "y.tab.c"
     break;
 
   case 20:
-#line 495 "1705014.y"
+#line 489 "1705014.y"
                                     {
 		(yyvsp[0].symbolinfo)->setDeclaredType(toUpper((yyvsp[-1].symbolinfo)->getName()));//correction needed
 		//list_of_parameters.push_back($2);
@@ -2049,11 +2043,11 @@ yyreduce:
  		(yyval.symbolinfo)=new SymbolInfo((yyvsp[-1].symbolinfo)->getName()+" "+(yyvsp[0].symbolinfo)->getName(),"parameter_list");
  		printLogRule("parameter_list  : type_specifier ID");
  		printLogSymbol((yyval.symbolinfo));}
-#line 2053 "y.tab.c"
+#line 2047 "y.tab.c"
     break;
 
   case 21:
-#line 503 "1705014.y"
+#line 497 "1705014.y"
                                  {//need to insert in parameter_list
 		
 		printLogRule("parameter_list  : type_specifier");
@@ -2064,11 +2058,11 @@ yyreduce:
 		(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 		printLogSymbol((yyvsp[0].symbolinfo));
 		}
-#line 2068 "y.tab.c"
+#line 2062 "y.tab.c"
     break;
 
   case 22:
-#line 514 "1705014.y"
+#line 508 "1705014.y"
                                        {
 		
 		printLogRule("parameter_list  : type_specifier");
@@ -2081,11 +2075,11 @@ yyreduce:
 
 		yyclearin;
 		}
-#line 2085 "y.tab.c"
+#line 2079 "y.tab.c"
     break;
 
   case 23:
-#line 527 "1705014.y"
+#line 521 "1705014.y"
                                                            {
 		
 		(yyval.symbolinfo)=new SymbolInfo((yyvsp[-3].symbolinfo)->getName()+","+(yyvsp[-1].symbolinfo)->getName(),"parameter_list");
@@ -2097,44 +2091,79 @@ yyreduce:
 	
 		yyclearin;
 		}
-#line 2101 "y.tab.c"
+#line 2095 "y.tab.c"
     break;
 
   case 24:
-#line 542 "1705014.y"
+#line 536 "1705014.y"
                            {table->EnterScope(logfile);
+			for(int i=0;i< list_of_parameters.size();i++)
+			 {
+				if(list_of_parameters[i]->getName()!="$") 
+				{
+					addDeclaredVar(list_of_parameters[i]->getName());//declare each variable in assembly code that is in the parameter of a defined function
+					list_of_parameters[i]->setAssemblyVarName(list_of_parameters[i]->getName()+table->currentScopeID());
+				}
+					
+			 }
 					InsertParametersSymbolTable();//with variables declared for parameters in asm
 					}
-#line 2109 "y.tab.c"
+#line 2112 "y.tab.c"
     break;
 
   case 25:
-#line 544 "1705014.y"
+#line 547 "1705014.y"
                                                            {
 		    
  		    (yyval.symbolinfo)=new SymbolInfo("{\n"+(yyvsp[-1].symbolinfo)->getName()+"\n}\n","compound_statement");
-			(yyval.symbolinfo)->setCode((yyvsp[-1].symbolinfo)->getCode());
+
+			string parameters="";
+			for(int i=list_of_parameters.size()-1;i>=0;i--)//inserting parameters in function ID
+			 {
+			  parameters=parameters+"POP AX\nMOV "+list_of_parameters[i]->getAssemblyVarName()+",AL\n" ;
+			 
+			 }
+			 if(parameters!="") parameters="POP BX\n"+parameters+"PUSH BX\n";
+			(yyval.symbolinfo)->code=parameters+(yyvsp[-1].symbolinfo)->code;
  		    printLogRule("compound_statement : LCURL statements RCURL");
  		    printLogSymbol((yyval.symbolinfo));
  		    table->printAllScope(logfile);
-	            table->ExitScope(logfile);
+	         table->ExitScope(logfile);
 	            
  		    }
-#line 2124 "y.tab.c"
+#line 2135 "y.tab.c"
     break;
 
   case 26:
-#line 555 "1705014.y"
+#line 566 "1705014.y"
                             {table->EnterScope(logfile);
 			InsertParametersSymbolTable();}
-#line 2131 "y.tab.c"
+#line 2142 "y.tab.c"
     break;
 
   case 27:
-#line 556 "1705014.y"
+#line 567 "1705014.y"
                                                               {
+				
  		    
  		    (yyval.symbolinfo)=new SymbolInfo("{\n}\n","compound_statement");
+			for(int i=0;i< list_of_parameters.size();i++)
+			 {
+				if(list_of_parameters[i]->getName()!="$") 
+				{
+					addDeclaredVar(list_of_parameters[i]->getName());//declare each variable in assembly code that is in the parameter of a defined function
+					list_of_parameters[i]->setAssemblyVarName(list_of_parameters[i]->getName()+table->currentScopeID());
+				}
+					
+			 }
+			string parameters="";
+			for(int i=list_of_parameters.size()-1;i>=0;i--)//inserting parameters in function ID
+			 {
+			  parameters=parameters+"POP AX\nMOV "+list_of_parameters[i]->getAssemblyVarName()+",AL\n" ;
+			 
+			 }
+			if(parameters!="") parameters="POP BX\n"+parameters+"PUSH BX\n";
+			(yyval.symbolinfo)->code=parameters;
  		    printLogRule("compound_statement : LCURL RCURL");
  		    printLogSymbol((yyval.symbolinfo));
  		    table->printAllScope(logfile);
@@ -2143,11 +2172,11 @@ yyreduce:
 				
 	            
  		    }
-#line 2147 "y.tab.c"
+#line 2176 "y.tab.c"
     break;
 
   case 28:
-#line 569 "1705014.y"
+#line 598 "1705014.y"
                                                             {
 								
 								//string str=$1->getName();
@@ -2159,38 +2188,38 @@ yyreduce:
 		
 								printLogSymbol((yyval.symbolinfo));
 								}
-#line 2163 "y.tab.c"
+#line 2192 "y.tab.c"
     break;
 
   case 29:
-#line 597 "1705014.y"
+#line 626 "1705014.y"
                       {
 			(yyval.symbolinfo)=new SymbolInfo("int","type_specifier");
 			printLogRule("type_specifier : INT");
 			printLogSymbol((yyval.symbolinfo));}
-#line 2172 "y.tab.c"
+#line 2201 "y.tab.c"
     break;
 
   case 30:
-#line 602 "1705014.y"
+#line 631 "1705014.y"
                         {
 			(yyval.symbolinfo)=new SymbolInfo("float","type_specifier");
 			printLogRule("type_specifier : FLOAT");
 			printLogSymbol((yyval.symbolinfo));}
-#line 2181 "y.tab.c"
+#line 2210 "y.tab.c"
     break;
 
   case 31:
-#line 607 "1705014.y"
+#line 636 "1705014.y"
                        {
 			(yyval.symbolinfo)=new SymbolInfo("void","type_specifier");
 			printLogRule("type_specifier : VOID");
 			printLogSymbol((yyval.symbolinfo));}
-#line 2190 "y.tab.c"
+#line 2219 "y.tab.c"
     break;
 
   case 32:
-#line 615 "1705014.y"
+#line 644 "1705014.y"
                                              {
 						//list_of_declared_vars.push_back($3);
 						(yyvsp[0].symbolinfo)->setAssemblyVarName((yyvsp[0].symbolinfo)->getName()+table->currentScopeID());
@@ -2199,11 +2228,11 @@ yyreduce:
 						(yyval.symbolinfo)=new SymbolInfo((yyvsp[-2].symbolinfo)->getName()+","+(yyvsp[0].symbolinfo)->getName(),"declaration_list");
 						printLogRule("declaration_list : declaration_list COMMA ID");
 						printLogSymbol((yyval.symbolinfo));}
-#line 2203 "y.tab.c"
+#line 2232 "y.tab.c"
     break;
 
   case 33:
-#line 624 "1705014.y"
+#line 653 "1705014.y"
                                                                       {
  		  							(yyvsp[-3].symbolinfo)->setArray();
 									(yyvsp[-3].symbolinfo)->setAssemblyVarName((yyvsp[-3].symbolinfo)->getName()+table->currentScopeID());
@@ -2213,11 +2242,11 @@ yyreduce:
  		  							(yyval.symbolinfo)=new SymbolInfo((yyvsp[-5].symbolinfo)->getName()+","+(yyvsp[-3].symbolinfo)->getName()+"["+(yyvsp[-1].symbolinfo)->getName()+"]","declaration_list");
 									printLogRule("declaration_list : declaration_list COMMA ID LTHIRD CONST_INT RTHIRD");
 									printLogSymbol((yyval.symbolinfo));}
-#line 2217 "y.tab.c"
+#line 2246 "y.tab.c"
     break;
 
   case 34:
-#line 634 "1705014.y"
+#line 663 "1705014.y"
                        {
  		
 			(yyvsp[0].symbolinfo)->setAssemblyVarName((yyvsp[0].symbolinfo)->getName()+table->currentScopeID());
@@ -2228,11 +2257,11 @@ yyreduce:
  		  	(yyval.symbolinfo)= new SymbolInfo();
 		      	(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 		      	printLogSymbol((yyvsp[0].symbolinfo));}
-#line 2232 "y.tab.c"
+#line 2261 "y.tab.c"
     break;
 
   case 35:
-#line 645 "1705014.y"
+#line 674 "1705014.y"
                                                {
  		  				(yyvsp[-3].symbolinfo)->setArray();
 						(yyvsp[-3].symbolinfo)->setAssemblyVarName((yyvsp[-3].symbolinfo)->getName()+table->currentScopeID());
@@ -2243,11 +2272,11 @@ yyreduce:
  		  				(yyval.symbolinfo)=new SymbolInfo((yyvsp[-3].symbolinfo)->getName()+"["+(yyvsp[-1].symbolinfo)->getName()+"]","declaration_list");
 						printLogRule("declaration_list : ID LTHIRD CONST_INT RTHIRD");
 						printLogSymbol((yyval.symbolinfo));}
-#line 2247 "y.tab.c"
+#line 2276 "y.tab.c"
     break;
 
   case 36:
-#line 656 "1705014.y"
+#line 685 "1705014.y"
                                                    {
 						
 						
@@ -2256,51 +2285,51 @@ yyreduce:
 						printLogRule("declaration_list : declaration_list COMMA ID");
 						printLogSymbol((yyval.symbolinfo));
 						}
-#line 2260 "y.tab.c"
+#line 2289 "y.tab.c"
     break;
 
   case 37:
-#line 666 "1705014.y"
+#line 695 "1705014.y"
                        {
 			printLogRule("statements : statement");
 			(yyval.symbolinfo)= new SymbolInfo();
 			(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 			printLogSymbol((yyvsp[0].symbolinfo));}
-#line 2270 "y.tab.c"
+#line 2299 "y.tab.c"
     break;
 
   case 38:
-#line 672 "1705014.y"
+#line 701 "1705014.y"
                                   {
 	   (yyval.symbolinfo)=new SymbolInfo((yyvsp[-1].symbolinfo)->getName()+"\n"+(yyvsp[0].symbolinfo)->getName(),"declaration_list");
 	   printLogRule("statements : statements statement");
 	   printLogSymbol((yyval.symbolinfo));
 	   (yyval.symbolinfo)->setCode((yyvsp[-1].symbolinfo)->getCode()+"\n"+(yyvsp[0].symbolinfo)->getCode()+"\n");
 	   }
-#line 2281 "y.tab.c"
+#line 2310 "y.tab.c"
     break;
 
   case 39:
-#line 679 "1705014.y"
+#line 708 "1705014.y"
                               {
 		
 		
 	
 		
 	   }
-#line 2292 "y.tab.c"
+#line 2321 "y.tab.c"
     break;
 
   case 40:
-#line 686 "1705014.y"
+#line 715 "1705014.y"
                    {
 	   	
 	   }
-#line 2300 "y.tab.c"
+#line 2329 "y.tab.c"
     break;
 
   case 41:
-#line 693 "1705014.y"
+#line 722 "1705014.y"
                             {
 				//$$->setName($1->getName());
 				printLogRule("statement : var_declaration");
@@ -2308,11 +2337,11 @@ yyreduce:
 		      		(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 		      		printLogSymbol((yyvsp[0].symbolinfo));
 			     }
-#line 2312 "y.tab.c"
+#line 2341 "y.tab.c"
     break;
 
   case 42:
-#line 700 "1705014.y"
+#line 729 "1705014.y"
                              {
 	  
 	  			printLogRule("statement : func_declaration");
@@ -2322,11 +2351,11 @@ yyreduce:
 				printError("A function declared inside a function");
 	  
 	  			}
-#line 2326 "y.tab.c"
+#line 2355 "y.tab.c"
     break;
 
   case 43:
-#line 709 "1705014.y"
+#line 738 "1705014.y"
                             {
 	  
 	  			printLogRule("statement : func_definition");
@@ -2336,41 +2365,48 @@ yyreduce:
 				printError("A function defined inside a function");
 	  
 	  			}
-#line 2340 "y.tab.c"
+#line 2369 "y.tab.c"
     break;
 
   case 44:
-#line 719 "1705014.y"
+#line 748 "1705014.y"
                                  {
 	  			printLogRule("statement : expression_statement");
 	  			(yyval.symbolinfo)= new SymbolInfo();
 				(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 				printLogSymbol((yyvsp[0].symbolinfo));}
-#line 2350 "y.tab.c"
+#line 2379 "y.tab.c"
     break;
 
   case 45:
-#line 725 "1705014.y"
+#line 754 "1705014.y"
                                {
 	  			printLogRule("statement : compound_statement");
 	  			(yyval.symbolinfo)= new SymbolInfo();
 				(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 				printLogSymbol((yyvsp[0].symbolinfo));}
-#line 2360 "y.tab.c"
+#line 2389 "y.tab.c"
     break;
 
   case 46:
-#line 731 "1705014.y"
+#line 760 "1705014.y"
                                                                                              {
 	  (yyval.symbolinfo)=new SymbolInfo("for("+(yyvsp[-4].symbolinfo)->getName()+(yyvsp[-3].symbolinfo)->getName()+(yyvsp[-2].symbolinfo)->getName()+")"+(yyvsp[0].symbolinfo)->getName(),"declaration_list");
 	  printLogRule("statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement");
 	  printLogSymbol((yyval.symbolinfo));
+	  string startLabel="startFor"+newLabel();
+	  string endLabel="endFor"+newLabel();
+	  (yyval.symbolinfo)->code=(yyvsp[-4].symbolinfo)->code+"\n";
+	  (yyval.symbolinfo)->code+=startLabel+":\n"+(yyvsp[-3].symbolinfo)->code;
+	  (yyval.symbolinfo)->code+="MOV AL,"+(yyvsp[-3].symbolinfo)->getAssemblyVarName()+"\nCMP AL,0\n";
+	  (yyval.symbolinfo)->code+="JE "+endLabel+"\n"+(yyvsp[0].symbolinfo)->code+"\n"+(yyvsp[-2].symbolinfo)->code;
+	  (yyval.symbolinfo)->code+="\nJMP "+startLabel+"\n"+endLabel+":\n";
 	  }
-#line 2370 "y.tab.c"
+#line 2406 "y.tab.c"
     break;
 
   case 47:
-#line 737 "1705014.y"
+#line 773 "1705014.y"
                                                                         {
 	  (yyval.symbolinfo)=new SymbolInfo("if("+(yyvsp[-2].symbolinfo)->getName()+")"+(yyvsp[0].symbolinfo)->getName(),"declaration_list");
 	  printLogRule("statement : IF LPAREN expression RPAREN statement");
@@ -2379,11 +2415,11 @@ yyreduce:
 	  (yyval.symbolinfo)->code=(yyvsp[-2].symbolinfo)->code+"MOV AL,"+(yyvsp[-2].symbolinfo)->getAssemblyVarName()+"\n";
 	  (yyval.symbolinfo)->code+="CMP AL,0\nJE "+label1+"\n"+(yyvsp[0].symbolinfo)->code+"\n"+label1+":;line no "+to_string(line_no)+"\n";
 	  }
-#line 2383 "y.tab.c"
+#line 2419 "y.tab.c"
     break;
 
   case 48:
-#line 746 "1705014.y"
+#line 782 "1705014.y"
                                                                  {
 	  (yyval.symbolinfo)=new SymbolInfo("if("+(yyvsp[-4].symbolinfo)->getName()+")"+(yyvsp[-2].symbolinfo)->getName()+"else\n"+(yyvsp[0].symbolinfo)->getName(),"declaration_list");
 	  printLogRule("statement : IF LPAREN expression RPAREN statement ELSE statement");
@@ -2396,20 +2432,26 @@ yyreduce:
 	  
 	  
 	  }
-#line 2400 "y.tab.c"
+#line 2436 "y.tab.c"
     break;
 
   case 49:
-#line 759 "1705014.y"
+#line 795 "1705014.y"
                                                      {
 	  (yyval.symbolinfo)=new SymbolInfo("while("+(yyvsp[-2].symbolinfo)->getName()+")"+(yyvsp[0].symbolinfo)->getName(),"declaration_list");
 	  printLogRule("statement : WHILE LPAREN expression RPAREN statement");
-	  printLogSymbol((yyval.symbolinfo));}
-#line 2409 "y.tab.c"
+	  printLogSymbol((yyval.symbolinfo));
+	  
+	  string startLabel="startWhile"+newLabel();
+	  string endLabel="endWhile"+newLabel();
+	  (yyval.symbolinfo)->code=startLabel+":\n"+(yyvsp[-2].symbolinfo)->code+"\nMOV AL,"+(yyvsp[-2].symbolinfo)->getAssemblyVarName()+"\nCMP AL,0\n";
+	  (yyval.symbolinfo)->code+="JE "+endLabel+"\n"+(yyvsp[0].symbolinfo)->code+"\nJMP "+startLabel+"\n"+endLabel+":\n";
+	  }
+#line 2451 "y.tab.c"
     break;
 
   case 50:
-#line 764 "1705014.y"
+#line 806 "1705014.y"
                                                {
 	  (yyval.symbolinfo)=new SymbolInfo("println("+(yyvsp[-2].symbolinfo)->getName()+");","declaration_list");
 	  printLogRule("statement : PRINTLN LPAREN ID RPAREN SEMICOLON");
@@ -2424,40 +2466,42 @@ yyreduce:
 	  }
 	  printLogSymbol((yyval.symbolinfo));
 	  }
-#line 2428 "y.tab.c"
+#line 2470 "y.tab.c"
     break;
 
   case 51:
-#line 779 "1705014.y"
+#line 821 "1705014.y"
                                         {
 	  (yyval.symbolinfo)=new SymbolInfo("return "+(yyvsp[-1].symbolinfo)->getName()+";","declaration_list");
-	  (yyval.symbolinfo)->setCode("RET");
+	  (yyval.symbolinfo)->code=(yyvsp[-1].symbolinfo)->code;
+	  if(currentFunctionName != "main") (yyval.symbolinfo)->code+="\nPOP BX\nMOV AH,0\nMOV AL,"+(yyvsp[-1].symbolinfo)->getAssemblyVarName()+"\nPUSH AX\nPUSH BX\nRET\n";
 	  printLogRule("statement : RETURN expression SEMICOLON");
 	  printLogSymbol((yyval.symbolinfo));}
-#line 2438 "y.tab.c"
+#line 2481 "y.tab.c"
     break;
 
   case 52:
-#line 786 "1705014.y"
+#line 829 "1705014.y"
                                     {
 			(yyval.symbolinfo)=new SymbolInfo(";","expression_statement");
 			printLogRule("expression_statement : SEMICOLON");
 			printLogSymbol((yyval.symbolinfo));}
-#line 2447 "y.tab.c"
+#line 2490 "y.tab.c"
     break;
 
   case 53:
-#line 791 "1705014.y"
+#line 834 "1705014.y"
                                                {
 			(yyval.symbolinfo)=new SymbolInfo((yyvsp[-1].symbolinfo)->getName()+";","expression_statement");
 			(yyval.symbolinfo)->setCode((yyvsp[-1].symbolinfo)->getCode());
+			(yyval.symbolinfo)->setAssemblyVarName((yyvsp[-1].symbolinfo)->getAssemblyVarName());
 			printLogRule("expression_statement : expression SEMICOLON");
 			printLogSymbol((yyval.symbolinfo));}
-#line 2457 "y.tab.c"
+#line 2501 "y.tab.c"
     break;
 
   case 54:
-#line 803 "1705014.y"
+#line 847 "1705014.y"
               {
 		printLogRule("variable : ID");
 		
@@ -2467,6 +2511,7 @@ yyreduce:
 		{
 			(yyval.symbolinfo)= new SymbolInfo();
 			(yyval.symbolinfo)->makeCopy(s);
+			
 			
 			if(s->getIsFunction())
 			{
@@ -2493,11 +2538,11 @@ yyreduce:
 		printLogSymbol((yyvsp[0].symbolinfo));
 		
 		}
-#line 2497 "y.tab.c"
+#line 2542 "y.tab.c"
     break;
 
   case 55:
-#line 839 "1705014.y"
+#line 884 "1705014.y"
                                        {
 	 
 	 (yyval.symbolinfo)=new SymbolInfo((yyvsp[-3].symbolinfo)->getName()+"["+(yyvsp[-1].symbolinfo)->getName()+"]","variable");
@@ -2544,21 +2589,21 @@ yyreduce:
 	printLogSymbol((yyval.symbolinfo));	
 	 
 	 }
-#line 2548 "y.tab.c"
+#line 2593 "y.tab.c"
     break;
 
   case 56:
-#line 888 "1705014.y"
+#line 933 "1705014.y"
                               {
 	    printLogRule("expression : logic_expression");
 	    (yyval.symbolinfo)= new SymbolInfo();
 	    (yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 	    printLogSymbol((yyval.symbolinfo));}
-#line 2558 "y.tab.c"
+#line 2603 "y.tab.c"
     break;
 
   case 57:
-#line 894 "1705014.y"
+#line 939 "1705014.y"
                                                 {
 	   (yyval.symbolinfo)=new SymbolInfo((yyvsp[-2].symbolinfo)->getName()+"="+(yyvsp[0].symbolinfo)->getName(),"expression");
 	   printLogRule("expression : variable ASSIGNOP logic_expression");
@@ -2581,21 +2626,21 @@ yyreduce:
 	   
 	   
 	   }
-#line 2585 "y.tab.c"
+#line 2630 "y.tab.c"
     break;
 
   case 58:
-#line 922 "1705014.y"
+#line 967 "1705014.y"
                                   {
 		  printLogRule("logic_expression : rel_expression");
 		  (yyval.symbolinfo)= new SymbolInfo();
 		  (yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 		  printLogSymbol((yyval.symbolinfo));}
-#line 2595 "y.tab.c"
+#line 2640 "y.tab.c"
     break;
 
   case 59:
-#line 928 "1705014.y"
+#line 973 "1705014.y"
                                                          {
 		 (yyval.symbolinfo)=new SymbolInfo((yyvsp[-2].symbolinfo)->getName()+(yyvsp[-1].symbolinfo)->getName()+(yyvsp[0].symbolinfo)->getName(),"logic_expression");
 		 printLogRule("logic_expression : rel_expression LOGICOP rel_expression");
@@ -2626,21 +2671,21 @@ yyreduce:
 		  
 		  printLogSymbol((yyval.symbolinfo));
 		 }
-#line 2630 "y.tab.c"
+#line 2675 "y.tab.c"
     break;
 
   case 60:
-#line 961 "1705014.y"
+#line 1006 "1705014.y"
                                    {
 		printLogRule("rel_expression : simple_expression");
 		(yyval.symbolinfo)= new SymbolInfo();
 		(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 		printLogSymbol((yyval.symbolinfo));}
-#line 2640 "y.tab.c"
+#line 2685 "y.tab.c"
     break;
 
   case 61:
-#line 967 "1705014.y"
+#line 1012 "1705014.y"
                                                                 {
 		(yyval.symbolinfo)=new SymbolInfo((yyvsp[-2].symbolinfo)->getName()+(yyvsp[-1].symbolinfo)->getName()+(yyvsp[0].symbolinfo)->getName(),"rel_expression");
 		printLogRule("rel_expression : simple_expression RELOP simple_expression");
@@ -2676,21 +2721,21 @@ yyreduce:
 		  
 		  printLogSymbol((yyval.symbolinfo));
 		}
-#line 2680 "y.tab.c"
+#line 2725 "y.tab.c"
     break;
 
   case 62:
-#line 1005 "1705014.y"
+#line 1050 "1705014.y"
                          {
 		   (yyval.symbolinfo)= new SymbolInfo();
 		   (yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 		   printLogRule("simple_expression : term");
 		   printLogSymbol((yyval.symbolinfo));}
-#line 2690 "y.tab.c"
+#line 2735 "y.tab.c"
     break;
 
   case 63:
-#line 1011 "1705014.y"
+#line 1056 "1705014.y"
                                                  {
 		  (yyval.symbolinfo)=new SymbolInfo((yyvsp[-2].symbolinfo)->getName()+(yyvsp[-1].symbolinfo)->getName()+(yyvsp[0].symbolinfo)->getName(),"simple_expression");
 		  printLogRule("simple_expression : simple_expression ADDOP term");
@@ -2724,21 +2769,21 @@ yyreduce:
      		  
      		  printLogSymbol((yyval.symbolinfo));
 		  }
-#line 2728 "y.tab.c"
+#line 2773 "y.tab.c"
     break;
 
   case 64:
-#line 1046 "1705014.y"
+#line 1091 "1705014.y"
                          {
       printLogRule("term : unary_expression");
       (yyval.symbolinfo)= new SymbolInfo();
       (yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
       printLogSymbol((yyval.symbolinfo));}
-#line 2738 "y.tab.c"
+#line 2783 "y.tab.c"
     break;
 
   case 65:
-#line 1052 "1705014.y"
+#line 1097 "1705014.y"
                                     {
      (yyval.symbolinfo)=new SymbolInfo((yyvsp[-2].symbolinfo)->getName()+(yyvsp[-1].symbolinfo)->getName()+(yyvsp[0].symbolinfo)->getName(),"term");
      printLogRule("term : term MULOP unary_expression");
@@ -2802,11 +2847,11 @@ yyreduce:
      
      
      }
-#line 2806 "y.tab.c"
+#line 2851 "y.tab.c"
     break;
 
   case 66:
-#line 1118 "1705014.y"
+#line 1163 "1705014.y"
                                            {
 		  (yyval.symbolinfo)=new SymbolInfo((yyvsp[-1].symbolinfo)->getName()+(yyvsp[0].symbolinfo)->getName(),"unary_expression");
 		  printLogRule("unary_expression : ADDOP unary_expression");
@@ -2829,11 +2874,11 @@ yyreduce:
 		  }
 		  printLogSymbol((yyval.symbolinfo));
 		  }
-#line 2833 "y.tab.c"
+#line 2878 "y.tab.c"
     break;
 
   case 67:
-#line 1141 "1705014.y"
+#line 1186 "1705014.y"
                                         {//need this ?
 		 (yyval.symbolinfo)=new SymbolInfo("!"+(yyvsp[0].symbolinfo)->getName(),"unary_expression");
 		 printLogRule("unary_expression : NOT unary_expression");
@@ -2846,32 +2891,32 @@ yyreduce:
 		 
 		 printLogSymbol((yyval.symbolinfo));
 		 }
-#line 2850 "y.tab.c"
+#line 2895 "y.tab.c"
     break;
 
   case 68:
-#line 1154 "1705014.y"
+#line 1199 "1705014.y"
                           {
 		 printLogRule("unary_expression : factor");
 		 (yyval.symbolinfo)= new SymbolInfo();
 		 (yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 		 
 		 printLogSymbol((yyval.symbolinfo));}
-#line 2861 "y.tab.c"
+#line 2906 "y.tab.c"
     break;
 
   case 69:
-#line 1163 "1705014.y"
+#line 1208 "1705014.y"
                    {
 	printLogRule("factor: variable");
 	(yyval.symbolinfo)= new SymbolInfo();
 	(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 	printLogSymbol((yyval.symbolinfo));}
-#line 2871 "y.tab.c"
+#line 2916 "y.tab.c"
     break;
 
   case 70:
-#line 1169 "1705014.y"
+#line 1214 "1705014.y"
                                          {//function call
 	//get the function variable from symbolTable
 	
@@ -2914,6 +2959,16 @@ yyreduce:
 				
 			}
 			(yyval.symbolinfo)->setDeclaredType(s->getDeclaredType());
+			
+			
+			
+			(yyval.symbolinfo)->code=(yyvsp[-1].symbolinfo)->code+"\nCALL "+s->getName()+"\n";
+			if(s->getDeclaredType()!="VOID"){
+			string newTempVar= newTemp();
+			(yyval.symbolinfo)->code+="POP AX\nMOV "+newTempVar+", AL\n";
+			(yyval.symbolinfo)->setAssemblyVarName(newTempVar);
+			}
+			
 		}
 		else
 		{
@@ -2922,6 +2977,8 @@ yyreduce:
 		}
 		
 		//$$->setDeclaredType(s->getDeclaredType());
+		
+		//call $1->getName, pop the result and store in a new temporary variable
 	}
 	else 
 	{
@@ -2932,11 +2989,11 @@ yyreduce:
 	list_of_arguments.clear();
 	printLogSymbol((yyval.symbolinfo));
 	;}
-#line 2936 "y.tab.c"
+#line 2993 "y.tab.c"
     break;
 
   case 71:
-#line 1231 "1705014.y"
+#line 1288 "1705014.y"
                                    {
 	(yyval.symbolinfo)=new SymbolInfo("("+(yyvsp[-1].symbolinfo)->getName()+")","factor");
 	printLogRule("factor : LPAREN expression RPAREN");
@@ -2944,11 +3001,11 @@ yyreduce:
 	(yyval.symbolinfo)->setCode((yyvsp[-1].symbolinfo)->getCode());
 	(yyval.symbolinfo)->setAssemblyVarName((yyvsp[-1].symbolinfo)->getAssemblyVarName());
 	printLogSymbol((yyval.symbolinfo));}
-#line 2948 "y.tab.c"
+#line 3005 "y.tab.c"
     break;
 
   case 72:
-#line 1239 "1705014.y"
+#line 1296 "1705014.y"
                     {
 	(yyvsp[0].symbolinfo)->setDeclaredType("INT");
 	(yyvsp[0].symbolinfo)->setAssemblyVarName((yyvsp[0].symbolinfo)->getName());
@@ -2956,11 +3013,11 @@ yyreduce:
 	(yyval.symbolinfo)= new SymbolInfo();
 	(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 	printLogSymbol((yyval.symbolinfo));}
-#line 2960 "y.tab.c"
+#line 3017 "y.tab.c"
     break;
 
   case 73:
-#line 1247 "1705014.y"
+#line 1304 "1705014.y"
                       {
 	(yyvsp[0].symbolinfo)->setDeclaredType("FLOAT");
 	(yyvsp[0].symbolinfo)->setAssemblyVarName((yyvsp[0].symbolinfo)->getName());
@@ -2968,11 +3025,11 @@ yyreduce:
 	(yyval.symbolinfo)= new SymbolInfo();
 	(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 	printLogSymbol((yyval.symbolinfo));}
-#line 2972 "y.tab.c"
+#line 3029 "y.tab.c"
     break;
 
   case 74:
-#line 1255 "1705014.y"
+#line 1312 "1705014.y"
                          {
 	(yyval.symbolinfo)=new SymbolInfo((yyvsp[-1].symbolinfo)->getName()+"++","factor");
 	printLogRule("factor : variable INCOP");
@@ -2981,11 +3038,11 @@ yyreduce:
 	(yyval.symbolinfo)->setDeclaredType((yyvsp[-1].symbolinfo)->getDeclaredType());
 	printLogSymbol((yyval.symbolinfo));
 	}
-#line 2985 "y.tab.c"
+#line 3042 "y.tab.c"
     break;
 
   case 75:
-#line 1264 "1705014.y"
+#line 1321 "1705014.y"
                          {
 	(yyval.symbolinfo)=new SymbolInfo((yyvsp[-1].symbolinfo)->getName()+"--","factor");
 	printLogRule("factor : variable DECOP");
@@ -2993,11 +3050,11 @@ yyreduce:
 	(yyval.symbolinfo)->setAssemblyVarName((yyvsp[-1].symbolinfo)->getAssemblyVarName());
 	(yyval.symbolinfo)->setDeclaredType((yyvsp[-1].symbolinfo)->getDeclaredType());
 	printLogSymbol((yyval.symbolinfo));}
-#line 2997 "y.tab.c"
+#line 3054 "y.tab.c"
     break;
 
   case 76:
-#line 1273 "1705014.y"
+#line 1330 "1705014.y"
                       {
 	(yyvsp[0].symbolinfo)->setDeclaredType("WRONG_FLOAT");
 	printLogRule("factor : WRONG_FLOAT");
@@ -3006,22 +3063,22 @@ yyreduce:
 	printLogSymbol((yyval.symbolinfo));
 	
 	}
-#line 3010 "y.tab.c"
+#line 3067 "y.tab.c"
     break;
 
   case 77:
-#line 1285 "1705014.y"
+#line 1342 "1705014.y"
                          {
 			  printLogRule("argument_list : arguments");
 		      	(yyval.symbolinfo)= new SymbolInfo();
 		      	(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));			  
 			printLogSymbol((yyval.symbolinfo)); 
 			  }
-#line 3021 "y.tab.c"
+#line 3078 "y.tab.c"
     break;
 
   case 78:
-#line 1292 "1705014.y"
+#line 1349 "1705014.y"
                            {
 			  SymbolInfo * s=new SymbolInfo("","argument_list");
 			  printLogRule("argument_list : ");
@@ -3029,37 +3086,41 @@ yyreduce:
 			  (yyval.symbolinfo)=s;
 			  printLogSymbol((yyval.symbolinfo));
 			  }
-#line 3033 "y.tab.c"
+#line 3090 "y.tab.c"
     break;
 
   case 79:
-#line 1302 "1705014.y"
+#line 1359 "1705014.y"
                                              {
+		//mov ah,0\n mov al,$3->getAssemblyVarName()\n push AX
 		(yyval.symbolinfo)=new SymbolInfo((yyvsp[-2].symbolinfo)->getName()+","+(yyvsp[0].symbolinfo)->getName(),"arguments");
 		printLogRule("arguments : arguments COMMA logic_expression");
-		//list_of_arguments.push_back($3);
 		InsertInArgumentList((yyvsp[0].symbolinfo));
 		printLogSymbol((yyval.symbolinfo));
 		
+		(yyval.symbolinfo)->code=(yyvsp[-2].symbolinfo)->code+(yyvsp[0].symbolinfo)->code;
+		(yyval.symbolinfo)->code+="\nMOV AH,0\nMOV AL,"+(yyvsp[0].symbolinfo)->getAssemblyVarName()+"\nPUSH AX\n";
+		
 		}
-#line 3046 "y.tab.c"
+#line 3106 "y.tab.c"
     break;
 
   case 80:
-#line 1311 "1705014.y"
+#line 1371 "1705014.y"
                                  {
 	      	printLogRule("arguments : logic_expression");
 	      	(yyval.symbolinfo)= new SymbolInfo();
 	      	(yyval.symbolinfo)->makeCopy((yyvsp[0].symbolinfo));
 	      	InsertInArgumentList((yyvsp[0].symbolinfo));
 	      	printLogSymbol((yyval.symbolinfo));
-	      	//list_of_arguments.push_back();
+			(yyval.symbolinfo)->code=(yyvsp[0].symbolinfo)->code;
+			(yyval.symbolinfo)->code+="\nMOV AH,0\nMOV AL,"+(yyvsp[0].symbolinfo)->getAssemblyVarName()+"\nPUSH AX\n";
 	      	}
-#line 3059 "y.tab.c"
+#line 3120 "y.tab.c"
     break;
 
 
-#line 3063 "y.tab.c"
+#line 3124 "y.tab.c"
 
       default: break;
     }
@@ -3291,7 +3352,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1323 "1705014.y"
+#line 1384 "1705014.y"
 
 int main(int argc,char *argv[])
 {

@@ -37,7 +37,8 @@ int tempCount=0;
 
 void addDeclaredVar(string varName)
 {
-	codeDataDec=codeDataDec+varName+table->currentScopeID()+" DB "+" ?\n";
+	codeDataDec=codeDataDec+varName+table->currentScopeID()+" DB "+" ?; line no: "+to_string(line_no)+"\n";
+	cout<<table->currentScopeID()<<": "<<line_no<<endl;
 }
 
 string newLabel()
@@ -386,32 +387,19 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN {
 		
 		} compound_statement {
 		//inside compound statement, list of parameters inserted in scope
-		for(int i=0;i< list_of_parameters.size();i++)
-		 {
-			if(list_of_parameters[i]->getName()!="$") 
-			{
-				addDeclaredVar(list_of_parameters[i]->getName());//declare each variable in assembly code that is in the parameter of a defined function
-				list_of_parameters[i]->setAssemblyVarName(list_of_parameters[i]->getName()+table->currentScopeID());
-			}
-				
-		 }
-		string parameters="";
-		for(int i=list_of_parameters.size()-1;i>=0;i--)//inserting parameters in function ID
-		 {
-		  parameters=parameters+"POP AX\nMOV "+list_of_parameters[i]->getAssemblyVarName()+",AL\n" ;
-		 
-		 }
+
 		 
 		
 		list_of_parameters.clear();
 		$$=new SymbolInfo($1->getName()+" "+$2->getName()+"("+$4->getName()+")"+$7->getName(),"func_definition");
-		if($1->getName()=="void") $$->setCode($2->getName()+" PROC\n"+parameters+$7->getCode()+"\n"+$2->getName()+" ENDP\n");
-		else $$->setCode($2->getName()+" PROC\n"+parameters+$7->getCode()+"\nRET\n"+$2->getName()+" ENDP\n");
+		
 		printLogRule("func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement");
 		SymbolInfo * s= table->lookUp($2->getName());
 		if(s!=nullptr && s->getIsFunction())
 		{
 			s->setIsDefined();
+			if($1->getName()=="void") $$->setCode($2->getName()+" PROC\n"+$7->getCode()+"\nRET\n"+$2->getName()+" ENDP\n");
+			else $$->setCode($2->getName()+" PROC\n"+$7->getCode()+"\n"+$2->getName()+" ENDP\n");
 		}
 		printLogSymbol($$);
 		}
@@ -461,12 +449,18 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN {
 		$$=new SymbolInfo($1->getName()+" "+$2->getName()+"()"+$6->getName(),"func_definition");
 		printLogRule("func_definition : type_specifier ID LPAREN RPAREN compound_statement");
 		printLogSymbol($$);
-		if($2->getName()=="main")$$->setCode($2->getName()+" PROC\nMOV AX,@DATA\nMOV DS,AX"+$6->getCode()+"\nMOV AH,4CH\nINT 21H\n"+$2->getName()+" ENDP\n");           
-		else $$->setCode($2->getName()+" PROC\n"+$6->getCode()+"\n"+$2->getName()+" ENDP\n");
+		
 		SymbolInfo * s= table->lookUp($2->getName());
 		if(s!=nullptr && s->getIsFunction())
 		{
 			s->setIsDefined();
+			if($2->getName()=="main")$$->setCode($2->getName()+" PROC\nMOV AX,@DATA\nMOV DS,AX"+$6->getCode()+"\nMOV AH,4CH\nINT 21H\n"+$2->getName()+" ENDP\n");           
+			else 
+			{
+				if($1->getName()=="void") $$->setCode($2->getName()+" PROC\n"+$6->getCode()+"\nRET\n"+$2->getName()+" ENDP\n");
+				else $$->setCode($2->getName()+" PROC\n"+$6->getCode()+"\n"+$2->getName()+" ENDP\n");
+				
+			}
 		}
 		}
 		
@@ -540,22 +534,57 @@ parameter_list  : parameter_list COMMA type_specifier ID {
 
  		
 compound_statement : LCURL {table->EnterScope(logfile);
+			for(int i=0;i< list_of_parameters.size();i++)
+			 {
+				if(list_of_parameters[i]->getName()!="$") 
+				{
+					addDeclaredVar(list_of_parameters[i]->getName());//declare each variable in assembly code that is in the parameter of a defined function
+					list_of_parameters[i]->setAssemblyVarName(list_of_parameters[i]->getName()+table->currentScopeID());
+				}
+					
+			 }
 					InsertParametersSymbolTable();//with variables declared for parameters in asm
 					} statements RCURL {
 		    
  		    $$=new SymbolInfo("{\n"+$3->getName()+"\n}\n","compound_statement");
-			$$->setCode($3->getCode());
+
+			string parameters="";
+			for(int i=list_of_parameters.size()-1;i>=0;i--)//inserting parameters in function ID
+			 {
+			  parameters=parameters+"POP AX\nMOV "+list_of_parameters[i]->getAssemblyVarName()+",AL\n" ;
+			 
+			 }
+			 if(parameters!="") parameters="POP BX\n"+parameters+"PUSH BX\n";
+			$$->code=parameters+$3->code;
  		    printLogRule("compound_statement : LCURL statements RCURL");
  		    printLogSymbol($$);
  		    table->printAllScope(logfile);
-	            table->ExitScope(logfile);
+	         table->ExitScope(logfile);
 	            
  		    }
  		    
  		    | LCURL {table->EnterScope(logfile);
 			InsertParametersSymbolTable();} RCURL {
+				
  		    
  		    $$=new SymbolInfo("{\n}\n","compound_statement");
+			for(int i=0;i< list_of_parameters.size();i++)
+			 {
+				if(list_of_parameters[i]->getName()!="$") 
+				{
+					addDeclaredVar(list_of_parameters[i]->getName());//declare each variable in assembly code that is in the parameter of a defined function
+					list_of_parameters[i]->setAssemblyVarName(list_of_parameters[i]->getName()+table->currentScopeID());
+				}
+					
+			 }
+			string parameters="";
+			for(int i=list_of_parameters.size()-1;i>=0;i--)//inserting parameters in function ID
+			 {
+			  parameters=parameters+"POP AX\nMOV "+list_of_parameters[i]->getAssemblyVarName()+",AL\n" ;
+			 
+			 }
+			if(parameters!="") parameters="POP BX\n"+parameters+"PUSH BX\n";
+			$$->code=parameters;
  		    printLogRule("compound_statement : LCURL RCURL");
  		    printLogSymbol($$);
  		    table->printAllScope(logfile);
@@ -732,6 +761,13 @@ statement : var_declaration {
 	  $$=new SymbolInfo("for("+$3->getName()+$4->getName()+$5->getName()+")"+$7->getName(),"declaration_list");
 	  printLogRule("statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement");
 	  printLogSymbol($$);
+	  string startLabel="startFor"+newLabel();
+	  string endLabel="endFor"+newLabel();
+	  $$->code=$3->code+"\n";
+	  $$->code+=startLabel+":\n"+$4->code;
+	  $$->code+="MOV AL,"+$4->getAssemblyVarName()+"\nCMP AL,0\n";
+	  $$->code+="JE "+endLabel+"\n"+$7->code+"\n"+$5->code;
+	  $$->code+="\nJMP "+startLabel+"\n"+endLabel+":\n";
 	  }
 	  
 	  | IF LPAREN expression RPAREN statement %prec LOWER_THAN_ELSE {
@@ -759,7 +795,13 @@ statement : var_declaration {
 	  | WHILE LPAREN expression RPAREN statement {
 	  $$=new SymbolInfo("while("+$3->getName()+")"+$5->getName(),"declaration_list");
 	  printLogRule("statement : WHILE LPAREN expression RPAREN statement");
-	  printLogSymbol($$);}
+	  printLogSymbol($$);
+	  
+	  string startLabel="startWhile"+newLabel();
+	  string endLabel="endWhile"+newLabel();
+	  $$->code=startLabel+":\n"+$3->code+"\nMOV AL,"+$3->getAssemblyVarName()+"\nCMP AL,0\n";
+	  $$->code+="JE "+endLabel+"\n"+$5->code+"\nJMP "+startLabel+"\n"+endLabel+":\n";
+	  }
 	  
 	  | PRINTLN LPAREN ID RPAREN SEMICOLON {
 	  $$=new SymbolInfo("println("+$3->getName()+");","declaration_list");
@@ -778,7 +820,8 @@ statement : var_declaration {
 	  
 	  | RETURN expression SEMICOLON {
 	  $$=new SymbolInfo("return "+$2->getName()+";","declaration_list");
-	  $$->setCode("RET");
+	  $$->code=$2->code;
+	  if(currentFunctionName != "main") $$->code+="\nPOP BX\nMOV AH,0\nMOV AL,"+$2->getAssemblyVarName()+"\nPUSH AX\nPUSH BX\nRET\n";
 	  printLogRule("statement : RETURN expression SEMICOLON");
 	  printLogSymbol($$);}
 	  ;
@@ -791,6 +834,7 @@ expression_statement 	: SEMICOLON {
 			| expression SEMICOLON {
 			$$=new SymbolInfo($1->getName()+";","expression_statement");
 			$$->setCode($1->getCode());
+			$$->setAssemblyVarName($1->getAssemblyVarName());
 			printLogRule("expression_statement : expression SEMICOLON");
 			printLogSymbol($$);}
 			
@@ -809,6 +853,7 @@ variable : ID {
 		{
 			$$= new SymbolInfo();
 			$$->makeCopy(s);
+			
 			
 			if(s->getIsFunction())
 			{
@@ -1208,6 +1253,16 @@ factor	: variable {
 				
 			}
 			$$->setDeclaredType(s->getDeclaredType());
+			
+			
+			
+			$$->code=$3->code+"\nCALL "+s->getName()+"\n";
+			if(s->getDeclaredType()!="VOID"){
+			string newTempVar= newTemp();
+			$$->code+="POP AX\nMOV "+newTempVar+", AL\n";
+			$$->setAssemblyVarName(newTempVar);
+			}
+			
 		}
 		else
 		{
@@ -1216,6 +1271,8 @@ factor	: variable {
 		}
 		
 		//$$->setDeclaredType(s->getDeclaredType());
+		
+		//call $1->getName, pop the result and store in a new temporary variable
 	}
 	else 
 	{
@@ -1300,11 +1357,14 @@ argument_list : arguments{
 			  ;
 	
 arguments : arguments COMMA logic_expression {
+		//mov ah,0\n mov al,$3->getAssemblyVarName()\n push AX
 		$$=new SymbolInfo($1->getName()+","+$3->getName(),"arguments");
 		printLogRule("arguments : arguments COMMA logic_expression");
-		//list_of_arguments.push_back($3);
 		InsertInArgumentList($3);
 		printLogSymbol($$);
+		
+		$$->code=$1->code+$3->code;
+		$$->code+="\nMOV AH,0\nMOV AL,"+$3->getAssemblyVarName()+"\nPUSH AX\n";
 		
 		}
 		
@@ -1314,7 +1374,8 @@ arguments : arguments COMMA logic_expression {
 	      	$$->makeCopy($1);
 	      	InsertInArgumentList($1);
 	      	printLogSymbol($$);
-	      	//list_of_arguments.push_back();
+			$$->code=$1->code;
+			$$->code+="\nMOV AH,0\nMOV AL,"+$1->getAssemblyVarName()+"\nPUSH AX\n";
 	      	}
 	      	
 	      ;
