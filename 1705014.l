@@ -158,7 +158,7 @@ double {return DOUBLE;}
 return {return RETURN;}
 case {return CASE;}
 continue {return CONTINUE;}
-printf {return PRINTLN;}
+println {return PRINTLN;}
 
 {digits} {passInfo(yytext,"CONST_INT");
 	return CONST_INT;}

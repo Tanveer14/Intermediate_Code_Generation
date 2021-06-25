@@ -19,10 +19,12 @@ bool isArray;
 bool isFunction;
 bool isDefined;
 SymbolInfo * next;
-string code;
+
 
 
 public :
+    string code;
+    string assemblyVarName;
 
     SymbolInfo()
     {
@@ -34,6 +36,7 @@ public :
         isDefined=false;
         declaredType="UNDECLARED";
         this->code="";
+        this->assemblyVarName="";
     }
 
     SymbolInfo(string name,string type)
@@ -46,6 +49,7 @@ public :
         isDefined=false;
         declaredType="UNDECLARED";
         this->code="";
+        this->assemblyVarName="";
     }
     void setName(string n)///apparently not necessary
     {
@@ -134,6 +138,8 @@ public :
         this->name=s->name;
         this->type=s->type;
         this->isDefined=s->isDefined;
+        this->code=s->code;
+       this->assemblyVarName=s->assemblyVarName;
     }
 
     void setNext(SymbolInfo * p)
@@ -145,6 +151,24 @@ public :
         return next;
     }
 
+    void setCode(string s)
+    {
+        this->code=s;
+    }
+
+    string getCode()
+    {
+        return this->code;
+    }
+    void setAssemblyVarName(string s)
+    {
+        this->assemblyVarName=s;
+    }
+
+    string getAssemblyVarName()
+    {
+        return this->assemblyVarName;
+    }
     ~SymbolInfo()
     {
 
@@ -176,7 +200,7 @@ public:
         }
 
         parentScope=parent;
-        id=parent->id+"."+to_string(parent->increase_childID());
+        id=parent->id+"_"+to_string(parent->increase_childID());
         current_child_id =0;
 
     }
@@ -451,6 +475,10 @@ bool RemoveSymbol(string symbolName)
     return currentScope->deleteSymbol(symbolName);
 }
 
+string currentScopeID()
+{
+    return currentScope->getID();
+}
 SymbolInfo * lookUp(string symbolName)
 {
     ScopeTable * temp=currentScope;
