@@ -1,18 +1,19 @@
-int main(){
-    int a,b,c[3];
-	a=1*(2+3)%3;
-    b= 1<5;
-    c[0]=20;
-	c[1]=10;
-	    println(a);
-    println(b);
-    if(a && b)
-        c[0]++;
-    else
-        c[1]=c[0];
+int f(int a){
+    return 2*a;
+    a=9;
+}
 
-	a=c[0];
-	b=c[1];
+int g(int a, int b){
+    int x;
+    x=f(a)+a+b;
+    return x;
+}
+
+int main(){
+    int a,b;
+    a=1;
+    b=2;
+    a=g(a,b);
     println(a);
-    println(b);
-}//2,1,21,10
+    return 0;
+}//output 5

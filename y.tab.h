@@ -139,7 +139,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 211 "1705014.y"
+#line 281 "1705014.y"
 SymbolInfo* symbolinfo;
 
 #line 146 "y.tab.h"

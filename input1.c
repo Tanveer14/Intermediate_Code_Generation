@@ -8,13 +8,20 @@ int main(){
 	c[1]=50;
 	c[2]=-21;
     if(a && b)
-        c[0]++;
+	{
+		 c[0]++;
+	}
     else
         c[1]=c[0];
 	a=c[0];
 	b=c[1];
 	d=c[2];
-    println(a);
+	
+	 println(a);
+	a=!c[0];
+   
     println(b);
 	println(d);
+	println(a);
 }
+//2,1,-19,50,-21,0

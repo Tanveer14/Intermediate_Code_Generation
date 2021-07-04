@@ -13,7 +13,10 @@ a1_3 DW  ?; line no: 13
 b1_3 DW  ?; line no: 13
 t4 DW  ?
 
+
 .CODE
+
+
 
 
 PRINTLN PROC
@@ -54,6 +57,7 @@ INT 21H
 RET  
 PRINTLN ENDP
 
+
 f PROC
 POP BX
 POP AX
@@ -62,11 +66,15 @@ PUSH BX
 ;return 2*a;
 
 
+
+
 MOV AX,2
 MOV BX,a1_1
 IMUL BX
 
+
 MOV t0,AX
+
 
 POP BX
 MOV AX,t0
@@ -74,13 +82,18 @@ PUSH AX
 PUSH BX
 RET
 
+
 ;a=9;
+
+
 
 
 MOV AX,9
 MOV a1_1,AX
 
+
 f ENDP
+
 
 g PROC
 POP BX
@@ -91,32 +104,40 @@ MOV a1_2,AX
 PUSH BX
 ;int x;
 
+
 ;x=f(a)+a+b;
+
+
 
 
 MOV AX,a1_2
 PUSH AX
+
 
 CALL f
 POP AX
 MOV t1, AX
 
 
-MOV AX,t1
+
+
 MOV BX,a1_2
 ADD AX,BX
 MOV t2,AX
 
 
-MOV AX,t2
+
+
 MOV BX,b1_2
 ADD AX,BX
 MOV t3,AX
 
-MOV AX,t3
+
 MOV x1_2,AX
 
+
 ;return x;
+
 
 POP BX
 MOV AX,x1_2
@@ -125,51 +146,72 @@ PUSH BX
 RET
 
 
+
+
 g ENDP
+
 
 main PROC
 MOV AX,@DATA
 MOV DS,AX;int a,b;
 
+
 ;a=1;
+
+
 
 
 MOV AX,1
 MOV a1_3,AX
 
+
 ;b=2;
+
+
 
 
 MOV AX,2
 MOV b1_3,AX
 
+
 ;a=g(a,b);
+
+
 
 
 MOV AX,a1_3
 PUSH AX
 
+
 MOV AX,b1_3
 PUSH AX
+
 
 CALL g
 POP AX
 MOV t4, AX
 
-MOV AX,t4
+
 MOV a1_3,AX
 
+
 ;println(a);
+
 
 MOV BX,a1_3
 CALL PRINTLN
 
 
+
+
 ;return 0;
+
+
 
 
 MOV AH,4CH
 INT 21H
 main ENDP
+
 
 END MAIN

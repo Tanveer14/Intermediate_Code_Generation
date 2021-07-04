@@ -4,7 +4,7 @@ int main(){
     b= 1<5;
     c[0]=20;
 	c[1]=10;
-	    println(a);
+	println(a);
     println(b);
     if(a && b)
         c[0]++;
